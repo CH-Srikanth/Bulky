@@ -1,0 +1,150 @@
+﻿@using BulkyWeb
+@using Bulky.Models
+
+@using  Bulky.Models.ViewModels
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+
+@* Why IEnumerable<SelectListItem> instead of List<SelectListItem>? *@
+@* 	Because: *@
+
+@* IEnumerable<SelectListItem> is more flexible. *@
+
+@* MVC form helpers like Html.DropDownListFor() accept IEnumerable<SelectListItem>. *@
+
+@* You can pass a List<SelectListItem> or even a Query directly — it’s compatible. *@
+
+@* In short: *@
+@* Use IEnumerable when you only need to iterate, and you don't need List-specific features (like .Add() or .Count). *@
+
+@* ✅ It’s a good practice and considered efficient when only read/iterate is required. *@
+
+
+@* why not enumerable instead of ienumerable? *@
+@* Because Enumerable<T> doesn't exist as a usable class. *@
+@* 🔹 IEnumerable<T> is an interface — it's a contract that many collections (like List<T>, Array, HashSet<T>, etc.) implement. *@
+@* 🔹 System.Linq.Enumerable is a static class that provides LINQ methods like .Select(), .Where(), etc. *@
+
+@* Enumerable<T> ❌ // invalid — it's not a class *@
+@* IEnumerable<T> ✅ // correct — interface used for iteration *@
+
+
+@* ✅ Summary *@
+@* Term	What it is	Can you use it in model? *@
+@* Enumerable<T>	❌ Doesn’t exist (invalid)	❌ No *@
+@* System.Linq.Enumerable	🔧 Static utility class	❌ No *@
+@* IEnumerable<T>	✅ Interface (widely used)	✅ Yes *@
+
+
+
+@* why we added selectlist item in ienumerable  why not someother? *@
+@* Because Razor's form helpers (like Html.DropDownListFor() or asp-items) expect a collection of SelectListItem objects to render a *@
+@* <select> dropdown. *@
+@* <select asp-for="product.CategoryId" asp-items="Model.CategoryList"> *@
+@* only understands IEnumerable<SelectListItem> *@
+
+
+
+@* cant we bind two table in controller and create html  of product ,without product as property?  *@
+@* and show me along with productvm model if it is used when viewbag,,viewdata is used ?*@
+
+@* Great question again — you're digging into when to use ViewModel vs. *@
+@* ViewBag/ViewData — and whether we can avoid using Products as a property in ProductVm. *@
+
+@* Can We Bind Two Tables Without ViewModel? *@
+@* Yes, you can bind two tables manually in the controller and use ViewBag or ViewData to pass extra data to the view. *@
+@* But it's not recommended for complex forms like Product + Category dropdown. *@
+
+@* Which Should You Use? *@
+@* Feature						ViewModel (ProductVm)	ViewBag/ViewData *@
+@* Strong typing					✅ Yes					❌ No *@
+@* IntelliSense					✅ Yes					❌ No *@
+@* Cleaner controller logic		✅ Yes					❌ Messy *@
+@* Easier form binding				✅ Yes					❌ Manual *@
+@* Better for complex views		✅ Yes					❌  *@
+
+@* Use ProductVm when: *@
+
+@* You have multiple models to combine in one view (like Product + Category). *@
+
+@* You want clean binding of form values. *@
+
+@* You care about scalability and maintainability. *@
+
+@* Use ViewBag or ViewData only for quick & simple tasks, like displaying a message or dropdown on a non-editable view. *@
+
+
+@* Can I use only CategoryList in ProductVm and skip adding the full product model? *@
+@* Yes, you technically can. *@
+@* But only if you're fine with manually mapping and binding everything in the view. Let's walk through what it looks like. *@
+@* ex: *@
+@* public class ProductVm *@
+@* { *@
+@*     public IEnumerable<SelectListItem> *@
+@*     CategoryList { get; set; } *@
+@*     } *@
+
+@* cotroller get *@
+@*     public IActionResult Create() *@
+@*     { *@
+@*     var vm = new ProductVm *@
+@*     { *@
+@*     CategoryList = _db.Categories.Select(c => new SelectListItem *@
+@*     { *@
+@*     Text = c.Name, *@
+@*     Value = c.Id.ToString() *@
+@*     }) *@
+@*     }; *@
+@*     return View(vm); *@
+@*     } *@
+
+@* controller post *@
+
+@* [HttpPost] *@
+@* public IActionResult Create(IFormCollection form) *@
+@* { *@
+@*     Products product = new Products *@
+@*     { *@
+@*         Title = form["Title"], *@
+@*         Description = form["Description"], *@
+@*         Price = Convert.ToDouble(form["Price"]), *@
+@*         CategoryId = Convert.ToInt32(form["CategoryId"]) *@
+@*     }; *@
+
+@*     _db.Products.Add(product); *@
+@*     _db.SaveChanges(); *@
+@*     return RedirectToAction("Index"); *@
+@* } *@
+
+@* in view *@
+@*     @model ProductVm *@
+
+@*     <form asp-action="Create" method="post"> *@
+@*         <input name="Title" class="form-control" placeholder="Title" /> *@
+@*         <input name="Description" class="form-control" placeholder="Description" /> *@
+@*         <input name="Price" type="number" class="form-control" placeholder="Price" /> *@
+
+@*         <select name="CategoryId" asp-items="Model.CategoryList" class="form-select"> *@
+@*             <option value="">-- Select Category --</option> *@
+@*         </select> *@
+
+@*         <button type="submit">Save</button> *@
+@*     </form> *@
+
+
+@* why should we add hidden feild for image url is required ? *@
+@* When you're editing (updating) a product that already has an image, and the user does not upload a new image,  *@
+@* you still want to retain the existing image path in the database. *@
+
+@*  Problem: *@
+@* ImageUrl is not an input the user sees or edits directly. *@
+
+@* But it's a property in the Product model. *@
+
+@* When you submit the form, only visible fields (or those in *@
+@* <input>) are posted back to the server. *@
+
+@* So if you don’t include ImageUrl, it becomes null in the POST request, and you lose the previous image info. *@
+@* <input type="hidden" asp-for="Product.ImageUrl" /> *@
+@* This ensures the existing image path is submitted with the form data during editing. *@

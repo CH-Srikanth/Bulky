@@ -1,0 +1,59 @@
+﻿@model List<Products>
+<div class="container p-3">
+	<div class="container bg-light">
+		<div class="row">
+			<div class="col">
+				<h1 mt-2>Product List</h1>
+			</div>
+			<div class="col-auto text-end bg-dark p-3 text-bg-primary">
+				<a asp-controller="Products" asp-action="Upsert"> <i class="bi bi-plus-square-fill"></i> Create New Product</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+
+
+
+
+<table id="tbldata" class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>ISBN</th>
+            <th>Author</th>
+            <th>List Price</th>
+            <th>Price 50+</th>
+            
+            <th>Category</th>
+        </tr>
+    </thead>
+
+    @* no need of below tbody as we are using pagination using ajax *@
+    @* <tbody> *@
+    @*     @foreach (var item in Model) *@
+    @*     { *@
+    @*         <tr> *@
+    @*             <td>@item.Title</td> *@
+    @*             <td>@item.ISBN</td> *@
+    @*             <td>@item.Author</td> *@
+    @*             <td>@item.ListPrice</td> *@
+    @*             <td>@item.Price50</td> *@
+    @*             <td>@item.Category.Name</td> *@
+    @*             <td> *@
+    @*                 <a asp-action="Upsert" asp-route-id="@item.Id" class="btn btn-sm btn-warning">Edit</a> *@
+                 
+    @*                 <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger">Delete</a> *@
+    @*             </td> *@
+    @*         </tr> *@
+    @*     } *@
+    @* </tbody> *@
+</table>
+
+</div>
+ 
+    @section scripts{
+        <script src="~/js/Products.js"></script>
+    }
