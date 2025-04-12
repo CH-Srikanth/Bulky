@@ -1,0 +1,66 @@
+﻿@page
+@model BulkywWebRazor_Temp.Pages.Categories.indexModel
+
+<div class="container p-3">
+	<div class="container bg-light">
+		<div class="row">
+			<div class="col">
+				<h1 mt-2>Category List</h1>
+			</div>
+			<div class="col-auto text-end bg-dark p-3 text-bg-primary">
+				<a asp-page="/categories/Create"> <i class="bi bi-plus-square-fill"></i> Create New Category</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+<table class="table table-bordered table-striped"> 
+	<thead>
+		<tr>
+			<th>
+				category Name
+			</th>
+			<th>
+				Display
+			</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+
+		@foreach (var obj in Model.CategoryList) //here Model refer to @model  so first letter should be capital
+			{
+			<tr>
+					<td>
+						@obj.Name
+					</td>
+				
+					<td>
+						@obj.DisplayOrder
+					</td>
+				<td>
+					<div class="w-75 btn-group" role="group">
+						<a asp-page="/categories/Edit" asp-route-id="@obj.Id" class="btn btn-primary mx-2">
+					<i class="bi bi-pencil-square"></i>Edit
+						</a>
+
+						<a asp-page="/categories/Delete" asp-route-id="@obj.Id" class="btn btn-danger mx-2">
+							<i class="bi bi-trash3-fill"></i> Delete
+						</a>
+						@* asp-route-{value} - This attribute enables a wildcard-based route prefix.  *@
+						@* Any value specified in the {value} placeholder is interpreted as a route parameter.  You can see in url*@ 
+					</div>
+				</td>
+
+			</tr>
+			
+			}
+		
+	</tbody>
+	
+</table>
+
+</div>
+ 
